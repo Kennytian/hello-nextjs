@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start -- -p 3001",
     "clear": "rimraf .next",
+    "export": "next export",
     "deploy-on-node": "cross-env NODE_ENV=production PORT=3002 node server.js",
     "deploy-on-pm2": "pm2 delete server && cross-env NODE_ENV=production PORT=3003 pm2 start server.js"
   },

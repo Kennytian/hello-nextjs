@@ -6,7 +6,7 @@ const pids = ['id1', 'id2', 'id3'];
 const DynamicRoute = () =>
   pids.map(pid => (
     <Link key={pid} href='/post?pid=[pid]' as={`/post/${pid}`}>
-      <a>Post {pid}</a>
+      <a title={`Post ${pid}`}>Post {pid}</a>
     </Link>
   ));
 
