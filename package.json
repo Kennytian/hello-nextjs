@@ -20,7 +20,10 @@
     "next": "^9.1.1",
     "node-sass": "^4.12.0",
     "react": "16.10.2",
-    "react-dom": "16.10.2"
+    "react-dom": "16.10.2",
+    "react-redux": "^7.1.1",
+    "redux": "^4.0.4",
+    "redux-devtools-extension": "^2.13.8"
   },
   "devDependencies": {
     "consola": "^2.10.1",
