@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from "next/link";
+
 import DefaultLayout from "../components/layout";
 import Nav from '../components/nav';
 import styles from '../styles.scss';

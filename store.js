@@ -1,11 +1,15 @@
 import { createStore, applyMiddleware } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunkMiddleware from 'redux-thunk';
+import { persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 
 const initialState = {
   lastUpdate: 0,
   light: false,
-  count: 0
+  count: 0,
+  exampleData: [],
+  error: null,
 };
 
 const reducer = (state = initialState, action) => {
@@ -31,6 +35,16 @@ const reducer = (state = initialState, action) => {
         ...state,
         count: initialState.count,
       };
+    case actionTypes.LOAD_EXAMPLE_DATA:
+      return {
+        ...state,
+        exampleData: action.data,
+      };
+    case actionTypes.LOADING_DATA_FAILURE:
+      return {
+        ...state,
+        error: true,
+      };
     default:
       return state;
   }
@@ -41,6 +55,8 @@ export const actionTypes = {
   INCREMENT: 'INCREMENT',
   DECREMENT: 'DECREMENT',
   RESET: 'RESET',
+  LOAD_EXAMPLE_DATA: 'LOAD_EXAMPLE_DATA',
+  LOADING_DATA_FAILURE: 'LOADING_DATA_FAILURE',
 };
 
 export const serverRenderClock = isServer => dispatch => {
@@ -73,6 +89,22 @@ export const resetCount = () => {
   return { type: actionTypes.RESET };
 };
 
+export const loadExampleData = data => {
+  return { type: actionTypes.LOAD_EXAMPLE_DATA, data };
+};
+
+export const loadingExampleDataFailure = () => {
+  return { type: actionTypes.LOADING_DATA_FAILURE };
+};
+
+const persistConfig = {
+  key: 'primary',
+  storage,
+  whitelist: ['exampleData'],
+};
+
+const persistedReducer = persistReducer(persistConfig, reducer);
+
 export const initializeStore = (preloadedState = initialState) => {
-  return createStore(reducer, preloadedState, composeWithDevTools(applyMiddleware(thunkMiddleware)));
+  return createStore(persistedReducer, preloadedState, composeWithDevTools(applyMiddleware(thunkMiddleware)));
 };

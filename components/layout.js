@@ -28,11 +28,8 @@ const DefaultLayout = props => {
       <Head>
         <title>公共头部</title>
       </Head>
-      <div style={{ display: 'flex', 'flexDirection': 'column' }}>
+      <div style={{ 'display': 'flex', 'flexDirection': 'column' }}>
         <Link href='/'><a>主页</a></Link>
-        <Link href={'/cow-say-hi'}>
-          <a>cow-say-hi</a>
-        </Link>
         <Link href={'/data-page'}>
           <a>data-page</a>
         </Link>

@@ -1,6 +1,5 @@
 import React from 'react';
 import Head from 'next/head';
-import Link from 'next/link';
 import Nav from "../../../components/nav";
 
 const Home = () => (
@@ -17,11 +16,6 @@ const Home = () => (
       </p>
 
       <div className='row'>
-        <a href='https://nextjs.org/docs' className='card'>
-          <h3>Documentation &rarr;</h3>
-          <p>Learn more about Next.js in the documentation.</p>
-          <Link href='/data-page'>data-page</Link>
-        </a>
         <a href='https://nextjs.org/learn' className='card'>
           <h3>Next.js Learn &rarr;</h3>
           <p>Learn about Next.js by following an interactive tutorial!</p>
