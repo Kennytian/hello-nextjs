@@ -1,54 +1,46 @@
 import React from 'react';
+import { initializeStore } from '../store';
 
-import { Provider } from 'react-redux';
-import { initializeState } from '../store';
-import App from 'next/app';
+const isServer = typeof window === 'undefined';
+const __NEXT_REDUX_STORE__ = '__NEXT_REDUX_STORE__';
 
-let reduxStore;
-const getOrInitializeStore = initialState => {
-  if (typeof window === 'undefined') {
-    return initializeState(initialState);
+function getOrCreateStore(initialState) {
+  if (isServer) {
+    return initializeStore(initialState);
   }
 
-  if (!reduxStore) {
-    reduxStore = initializeState(initialState);
+  if(!window[__NEXT_REDUX_STORE__]) {
+    window[__NEXT_REDUX_STORE__] = initializeStore(initialState);
   }
 
-  return reduxStore;
-};
+  return window[__NEXT_REDUX_STORE__];
+}
 
-export const withRedux = (PageComponent, { ssr = true } = {}) => {
-  const WithRedux = ({ initialReduxState, ...props }) => {
-    const store = getOrInitializeStore(initialReduxState);
-    return (
-      <Provider store={store}>
-        <PageComponent {...props} />
-      </Provider>
-    );
-  };
+export default App => {
+  return class AppWithRedux extends React.Component {
+    static async getInitialProps (appContext) {
+      const reduxStore = getOrCreateStore();
 
-  if (process.env.NODE_ENV !== 'production') {
-    const isAppHoc = PageComponent === App || PageComponent.prototype instanceof App;
-    if (isAppHoc) {
-      throw new Error('The withRedux HOC only works with PageComponents');
+      appContext.ctx.reduxStore = reduxStore;
+
+      let appProps = {};
+      if(typeof App.getInitialProps === 'function') {
+        appProps = await App.getInitialProps(appContext);
+      }
+
+      return {
+        ...appProps,
+        initialReduxState: reduxStore.getState()
+      }
+    }
+
+    constructor(props) {
+      super(props);
+      this.reduxStore = getOrCreateStore(props.initialReduxState);
+    }
+
+    render() {
+      return <App {...this.props} reduxStore={this.reduxStore} />
     }
   }
-
-  if (process.env.NODE_ENV !== 'production') {
-    const displayName = PageComponent.displayName || PageComponent.name || 'Component';
-    WithRedux.display = `withRedux(${displayName})`;
-  }
-
-  if (ssr || PageComponent.getInitialProps) {
-    WithRedux.getInitialProps = async context => {
-      const reduxStore = getOrInitializeStore();
-      context.reduxStore = reduxStore;
-
-      const pageProps = typeof PageComponent.getInitialProps === 'function' ? await PageComponent.getInitialProps(context) : {};
-
-      return { ...pageProps, initializeState: reduxStore.getState() };
-    };
-  }
-
-  return WithRedux;
-};
+}

@@ -1,6 +1,5 @@
 import React from 'react';
 import Head from 'next/head';
-import Link from 'next/link';
 import Nav from '../components/nav';
 
 const Home = () => (
@@ -15,13 +14,7 @@ const Home = () => (
       <p className='description'>
         To get started, edit <code>pages/index.js</code> and save to reload.
       </p>
-
       <div className='row'>
-        <a href='https://nextjs.org/docs' className='card'>
-          <h3>Documentation &rarr;</h3>
-          <p>Learn more about Next.js in the documentation.</p>
-          <Link href='/data-page'>data-page</Link>
-        </a>
         <a href='https://nextjs.org/learn' className='card'>
           <h3>Next.js Learn &rarr;</h3>
           <p>Learn about Next.js by following an interactive tutorial!</p>
@@ -31,7 +24,6 @@ const Home = () => (
           <p>Find other example boilerplates on the Next.js GitHub.</p>
         </a>
       </div>
-
     </div>
 
     <style jsx>{`

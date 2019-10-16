@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { actionTypes as types } from '../store';
 
 const useCounter = () => {
   const count = useSelector(state => state.count);
@@ -8,19 +9,19 @@ const useCounter = () => {
 
   const increment = () => {
     dispatch({
-      type: 'INCREMENT',
+      type: types.INCREMENT,
     });
   };
 
   const decrement = () => {
     dispatch({
-      type: 'DECREMENT',
+      type: types.DECREMENT,
     });
   };
 
   const reset = () => {
     dispatch({
-      type: 'RESET',
+      type: types.RESET,
     });
   };
 

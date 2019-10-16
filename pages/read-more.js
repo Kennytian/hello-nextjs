@@ -1,48 +1,34 @@
 import React from 'react';
-import Router from 'next/router';
-import Link from 'next/link';
-import { useDispatch } from 'react-redux';
-import { withRedux } from '../utils/redux';
-import useInterval from '../utils/use-interval';
-import Counter from "../components/counter";
+import { connect } from 'react-redux';
+import { startClock, serverRenderClock } from '../store';
+import Counter from '../components/counter';
+import Example from '../components/examples';
 
-const ReadMore = props => {
-  const dispatch = useDispatch();
+class ReadMore extends React.Component {
+  static getInitialProps({ reduxStore, req }) {
+    const isServer = !!req;
+    reduxStore.dispatch(serverRenderClock(isServer));
 
-  useInterval(() => {
-    dispatch({
-      type: 'TICK',
-      light: true,
-      lastUpdate: Date.now(),
-    });
-  }, 1000);
+    return {};
+  }
 
-  const { initializeState } = props;
-  const { count, lastUpdate } = initializeState;
+  componentDidMount() {
+    const { dispatch } = this.props;
+    this.timer = startClock(dispatch);
+  }
 
-  return (
-    <div>
-      Click <span onClick={() => Router.push('/home')}>here</span> to read more.
-      <Link href='/home'>
-        <a>主页</a>
-      </Link>
-      <Counter />
-      <div>count: {count}</div>
-      <div>lastUpdate: {lastUpdate}</div>
-    </div>
-  );
-};
+  componentWillUnmount() {
+    clearInterval(this.timer);
+  }
 
-ReadMore.getInitialProps = ({ reduxStore }) => {
-  // Tick the time once, so we'll have a valid time before first render
-  const { dispatch } = reduxStore;
-  dispatch({
-    type: 'TICK',
-    light: typeof window === 'object',
-    lastUpdate: Date.now()
-  });
+  render() {
+    return (
+      <div>
+        <Counter />
+         <Example />
+      </div>
+    );
+  }
+}
 
-  return {}
-};
-
-export default withRedux(ReadMore);
+export default connect()(ReadMore);
